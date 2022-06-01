@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+<form class="form-signin" method="post">
+    <h1 class="h3 mb-3 fw-normal">Dodaj konkurencję</h1>
+        <table class="table table-hover table-responsive table-bordered mx-auto w-auto align-middle md:text-center table-condensed my-1">
+            {{ form.hidden_tag() }}
+            {{ form.name(class="form-control") }}
+            {{ form.number_of_missiles(class="form-control") }}
+            <br>
+
+            {{ form.competition(class="form-control") }}
+
+        </table>
+            {{ form.submit(class="mt-1 w-full text-white bg-blue-500 hover:bg-blue-600 px-3 py-1 rounded-md") }}
+<!--            <button type="submit" class="mt-1 w-full text-white bg-blue-500 hover:bg-blue-600 px-3 py-1 rounded-md">Zapisz</button>-->
+ </form>
+{% for field, errors in form.errors.items() %}
+<div class="alert alert-error">
+    {{ form[field].label }}: {{ ', '.join(errors) }}
+</div>
+{% endfor %}
+{% endblock content%}

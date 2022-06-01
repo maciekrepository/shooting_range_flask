@@ -1,0 +1,101 @@
+version: '3.9'
+networks:
+ api_postgres:
+  driver: bridge
+
+services:
+ web:
+  build:
+   context: .
+   dockerfile: shooting_range_front/Dockerfile
+  ports:
+   - "5000:5000"
+  volumes:
+   - ./shooting_range_front:/shooting_range_front
+  environment:
+   - FLASK_ENV=${FLASK_ENV}
+   - CELERY_BROKER_URL=${CELERY_BROKER_URL}
+   - CELERY_RESULT_BACKEND=${CELERY_RESULT_BACKEND}
+  networks:
+   - api_postgres
+  depends_on:
+   - redis
+
+
+ web1:
+  build:
+   context: .
+   dockerfile: shooting_range_api/Dockerfile
+  ports:
+   - "4000:4000"
+  volumes:
+   - ./shooting_range_api:/shooting_range_api
+  environment:
+   - FLASK_ENV=${FLASK_ENV}
+   - CELERY_BROKER_URL=${CELERY_BROKER_URL}
+   - CELERY_RESULT_BACKEND=${CELERY_RESULT_BACKEND}
+  networks:
+   - api_postgres
+  depends_on:
+   - redis
+   - web
+
+ celery_app:
+  build:
+   context: .
+   dockerfile: celery_app/Dockerfile
+  ports:
+   - "3000:3000"
+  volumes:
+   - ./celery_app:/celery_app
+  environment:
+   - FLASK_ENV=${FLASK_ENV}
+   - CELERY_BROKER_URL=${CELERY_BROKER_URL}
+   - CELERY_RESULT_BACKEND=${CELERY_RESULT_BACKEND}
+  networks:
+   - api_postgres
+  depends_on:
+   - redis
+   - web
+   - web1
+
+
+ celery-worker:
+  build: ./celery_app
+  command: python3 -m celery -A app.task.celery_app worker --loglevel=DEBUG
+  networks:
+   - api_postgres
+  environment:
+   - CELERY_BROKER_URL=${CELERY_BROKER_URL}
+   - CELERY_RESULT_BACKEND=${CELERY_RESULT_BACKEND}
+  depends_on:
+   - web
+   - redis
+   - web1
+
+
+ redis:
+  image: 'redis:4-alpine'
+  networks:
+   - api_postgres
+  ports:
+   - "6379:6379"
+
+
+ auth-service:
+  build:
+   context: ./keycloak
+   dockerfile: ./Dockerfile
+  container_name: auth-service
+  image: auth-service
+  ports:
+   - "8080:8080"
+  volumes:
+   - "./keycloak/config:/keycloak/config"
+  environment:
+   - "KEYCLOAK_USER=admin"
+   - "KEYCLOAK_PASSWORD=password"
+   - "KEYCLOAK_IMPORT=./keycloak/config/realm-export.json"
+  restart: unless-stopped
+  networks:
+   - api_postgres

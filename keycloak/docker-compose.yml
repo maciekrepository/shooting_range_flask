@@ -1,0 +1,23 @@
+version: '3.9'
+networks:
+ api_postgres:
+  driver: bridge
+
+services:
+  auth-service:
+    build:
+      context: ./
+      dockerfile: ./Dockerfile
+    container_name: auth-service
+    image: auth-service
+    ports:
+      - "8080:8080"
+    volumes:
+      - "./config:/config"
+    environment:
+      - "KEYCLOAK_USER=admin"
+      - "KEYCLOAK_PASSWORD=password"
+      - "KEYCLOAK_IMPORT=./config/realm-exportref.json,./config/realm-export_admin.json,./config/realm-export_user.json"
+    restart: unless-stopped
+    networks:
+      - api_postgres

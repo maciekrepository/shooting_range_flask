@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+
+<table class="table table-hover table-responsive table-bordered mx-auto w-auto align-middle md:text-center table-condensed my-1">
+
+	{% for challange_name, challange_results in splitted_results.items() %}
+	<h1 class="mx-auto w-auto align-middle md:text-center">{{ challange_name }}</h1>
+	<table class="table table-hover table-responsive table-bordered mx-auto w-auto align-middle md:text-center table-condensed table-striped">
+		<thead class="table-secondary">
+		<tr>
+			<td class="m"><b>Zawodnik</b></td>
+			<td class="m"><b>Konkurencja</b></td>
+			<td class="m"><b>X</b></td>
+			<td class="m"><b>10</b></td>
+			<td class="m"><b>9</b></td>
+			<td class="m"><b>8</b></td>
+			<td class="m"><b>7</b></td>
+			<td class="m"><b>6</b></td>
+			<td class="m"><b>5</b></td>
+			<td class="m"><b>4</b></td>
+			<td class="m"><b>3</b></td>
+			<td class="m"><b>2</b></td>
+			<td class="m"><b>1</b></td>
+			<td class="m"><b>Kara</b></td>
+			<td class="m"><b>Suma</b></td>
+			<td class="m"><b>Dyskwalifikacja</b></td>
+			{% if current_user.is_refree %}
+			<td class="m"><b>Edycja</b></td>
+			{% endif %}
+
+		</tr>
+		</thead>
+		{% for challange_result in  challange_results%}
+		<tr>
+			<td class="m">{{challange_result.competitor}}</td>
+			<td class="m">{{challange_result.challenge}}</td>
+			<td class="m">{{challange_result.X}}</td>
+			<td class="m">{{challange_result.ten}}</td>
+			<td class="m">{{challange_result.nine}}</td>
+			<td class="m">{{challange_result.eight}}</td>
+			<td class="m">{{challange_result.seven}}</td>
+			<td class="m">{{challange_result.six}}</td>
+			<td class="m">{{challange_result.five}}</td>
+			<td class="m">{{challange_result.four}}</td>
+			<td class="m">{{challange_result.three}}</td>
+			<td class="m">{{challange_result.two}}</td>
+			<td class="m">{{challange_result.one}}</td>
+			<td class="m">{{challange_result.penalty}}</td>
+			<td class="m">{{challange_result.sum}}</td>
+			<td class="m">
+				<label class="inline-flex items-center">
+					<input type="checkbox" {% if challange_result.disqualification == 1 %} checked="checked" {% endif %} onclick="return false">
+				</label>
+			</td>
+			{% if current_user.is_refree %}
+			<td>
+				<a href="/edit_result/{{competition.slug}}/{{challange_result._id}}" onclick="toggleMenu();">Edytuj wynik</a>
+			</td>
+			{% endif %}
+
+		</tr>
+		{% endfor %}
+	</table>
+	{% endfor %}
+
+
+</table>
+
+
+{% endblock content%}

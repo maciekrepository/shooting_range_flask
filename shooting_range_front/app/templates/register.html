@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<form class="form-signin" method="post">
+    <h1 class="h3 mb-3 fw-normal">Zarejestruj użytkownika</h1>
+
+        {{ form.hidden_tag() }}
+        {{ form.mail(class="form-control") }}
+        {{ form.name(class="form-control") }}
+        {{ form.surname(class="form-control") }}
+        {{ form.club(class="form-control") }}
+        {{ form.license(class="form-control") }}
+        {{ form.password(class="form-control") }}
+        {{ form.submit(class="mt-1 w-full text-white bg-blue-500 hover:bg-blue-600 px-3 py-1 rounded-md") }}
+
+
+ </form>
+
+
+{% for field, errors in form.errors.items() %}
+<div class="alert alert-error">
+    {{ form[field].label }}: {{ ', '.join(errors) }}
+</div>
+{% endfor %}
+{% endblock content%}

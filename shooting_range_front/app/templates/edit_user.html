@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% block content %}
+<form class="form-signin" method="POST">
+    <h1 class="h3 mb-3 fw-normal">Edytuj użytkownika {{user.name}} {{user.surname}}</h1>
+        <table class="table table-hover table-responsive table-bordered mx-auto w-auto align-middle md:text-center table-condensed my-1">
+            <thead class="table-secondary">
+            <tr>{{ form.hidden_tag() }}</tr>
+
+            <tr>
+                <td>{{ form.is_admin.label }}</td>
+                <td>{{ form.is_admin(class="form-control") }}</td>
+            </tr>
+            <tr>
+                <td>{{ form.is_refree.label }}</td>
+                <td>{{ form.is_refree(class="form-control") }}</td>
+            </tr>
+
+            </thead>
+
+        </table>
+            {{ form.submit(class="mt-1 w-full text-white bg-blue-500 hover:bg-blue-600 px-3 py-1 rounded-md") }}
+
+<!--        {{ form.id(class="invisible") }}-->
+        {{ form.id(class="invisible") }}
+
+        {{ form.mail(class="invisible") }}
+        {{ form.password(class="invisible") }}
+        {{ form.name(class="invisible") }}
+        {{ form.surname(class="invisible") }}
+        {{ form.club(class="invisible") }}
+        {{ form.license(class="invisible") }}
+
+
+<!--            <button type="submit" class="mt-1 w-full text-white bg-blue-500 hover:bg-blue-600 px-3 py-1 rounded-md">{{ form.submit }}</button>-->
+ </form>
+{% for field, errors in form.errors.items() %}
+<div class="alert alert-error">
+    {{ form[field].label }}: {{ ', '.join(errors) }}
+</div>
+{% endfor %}
+{% endblock content%}
