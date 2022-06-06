@@ -2,8 +2,8 @@
 * [General info](#general-info)
 * [Technologies](#technologies)
 * [Setup](#setup)
-* [More detailed information about modules](#more-detailed-information-about-modules)
-* [Application view](#application-view)
+* [Guideline](#guideline)
+
 
 
 ## General info
@@ -58,7 +58,14 @@ Technologies utilized in the frame of this project are:
 <br>
 Required action is to create Keycloak admin user. All users are created on behalf of admin user so registration of new users can not be done until Keycloak admin is created.
 <br>
-Please check screenshots below to see how to create Keycloak admin user.
+Please check guideline section to see how to create Keycloak admin user.
+</details>
 
-
+## Guideline
+<details>
+<summary>Click here to see how to use the application</summary>
+<br>
+Required action is to create Keycloak admin user. All users are created on behalf of admin user so registration of new users can not be done until Keycloak admin is created.
+<br>
+Please check guideline section to see how to create Keycloak admin user.
 </details>
