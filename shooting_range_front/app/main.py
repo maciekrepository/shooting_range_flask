@@ -61,17 +61,19 @@ from sqlalchemy import exc
 class Start(MethodView):
     def get(self):
         competitions = get_competitions()
-        print("start task")
 
-        # task = send_mail.delay()
         return render_template("start.html", competitions=competitions)
 
 
 class Home(MethodView):
     def get(self, competitions_slug):
         self.competition = get_competition(competitions_slug)
-        # task = send_mail.delay()
-        return render_template("home.html", competition=self.competition)
+        if 'roles' in session:
+            user_context = session['roles']
+        else:
+            user_context = 'none'
+
+        return render_template("home.html", competition=self.competition, user_context=user_context)
 
 
 class Login(MethodView):
@@ -172,7 +174,7 @@ class Register(MethodView):
 
 
 class AddCompetition(MethodView):
-    decorators = [login_required]
+    decorators = [login_required, scope_required('admin')]
 
     def form(self):
         return AddCompetitionForm()
@@ -181,11 +183,13 @@ class AddCompetition(MethodView):
         self.competition = None
 
     def get(self, competitions_slug):
+        user_context = session['roles']
         self.competition = get_competition(competitions_slug)
         return render_template(
             "add_competition.html",
             form=AddCompetitionForm(),
             competition=self.competition,
+            user_context=user_context
         )
 
     def post(self, competitions_slug):
@@ -206,7 +210,8 @@ class AddCompetition(MethodView):
 
 
 class AddChallange(MethodView):
-    decorators = [login_required]
+    decorators = [login_required, scope_required('default-roles-shooting-app')]
+
 
     def form(self):
         self.form = AddChallangeForm()
@@ -221,9 +226,10 @@ class AddChallange(MethodView):
         self.competition = None
 
     def get(self, competitions_slug):
+        user_context = session['roles']
         self.competition = get_competition(competitions_slug)
         return render_template(
-            "add_challange.html", form=self.form(), competition=self.competition
+            "add_challange.html", form=self.form(), competition=self.competition, user_context=user_context
         )
 
     def post(self, competitions_slug):
@@ -244,7 +250,7 @@ class AddChallange(MethodView):
 
 
 class AddResult(MethodView):
-    decorators = [login_required, scope_required('referee')]
+    decorators = [login_required, scope_required('default-roles-shooting-app')]
 
     def form(self, competition):
         self.form = AddResultForm()
@@ -259,6 +265,7 @@ class AddResult(MethodView):
         self.competition = None
 
     def get(self, competitions_slug):
+        user_context = session['roles']
         self.competition = get_competition(competitions_slug)
         enrolled_challanges = get_enrolled_challanges(
             current_user.id, self.competition["_id"]
@@ -268,6 +275,7 @@ class AddResult(MethodView):
             form=self.form(self.competition),
             competition=self.competition,
             enrolled_challanges=enrolled_challanges,
+            user_context=user_context
         )
 
     def post(self, competitions_slug):
@@ -296,11 +304,12 @@ class AddResult(MethodView):
 
 
 class GetResults(MethodView):
-    decorators = [login_required]
+    decorators = [login_required, scope_required('default-roles-shooting-app')]
 
     def get(self, competitions_slug):
         self.competition = get_competition(competitions_slug)
         results = get_results_request(self.competition["_id"])
+        user_context = session['roles']
 
         challanges = get_challanges()
         challange_dict = {}
@@ -349,17 +358,20 @@ class GetResults(MethodView):
             competition=self.competition,
             results=sorted_results,
             splitted_results=splitted_results,
+            user_context=user_context
         )
 
 
 class EditResult(MethodView):
-    decorators = [login_required]
+    decorators = [login_required, scope_required('referee')]
+
 
     def __init__(self):
         self.form = EditResultForm()
         self.competition = None
 
     def get(self, competitions_slug, idk):
+        user_context = session['roles']
         self.competition = get_competition(competitions_slug)
         edited_result = get_result_request(idk)
         id = edited_result["_id"]
@@ -397,7 +409,7 @@ class EditResult(MethodView):
             disqualification=disqualification,
         )
         return render_template(
-            "edit_result.html", form=self.form, competition=self.competition
+            "edit_result.html", form=self.form, competition=self.competition, user_context=user_context
         )
 
     def post(self, competitions_slug, idk):
@@ -429,16 +441,17 @@ class EditResult(MethodView):
 
 
 class GetUsers(MethodView):
-    decorators = [login_required]
+    decorators = [login_required, scope_required('admin')]
 
     def get(self, competitions_slug):
+        user_context = session['roles']
         competition = get_competition(competitions_slug)
         users = User.query.all()
-        return render_template("get_users.html", users=users, competition=competition)
+        return render_template("get_users.html", users=users, competition=competition, user_context=user_context)
 
 
 class EditUser(MethodView):
-    decorators = [login_required]
+    decorators = [login_required, scope_required('admin')]
 
     def __init__(self):
         self.form = EditUserForm()
@@ -446,6 +459,7 @@ class EditUser(MethodView):
         self.edited_user = None
 
     def get(self, competitions_slug, user_id):
+        user_context = session['roles']
         self.competition = get_competition(competitions_slug)
         self.edited_user = User.query.filter_by(id=user_id).first()
         id = self.edited_user.id
@@ -473,7 +487,7 @@ class EditUser(MethodView):
             "edit_user.html",
             form=self.form,
             competition=self.competition,
-            user=self.edited_user,
+            user=self.edited_user, user_context=user_context
         )
 
     def post(self, competitions_slug, user_id):
@@ -504,6 +518,7 @@ class EditUser(MethodView):
 class Logout(MethodView):
     def get(self, competitions_slug):
         logout_user()
+        session.update({"roles": 'none'})
         return redirect(url_for("Home", competitions_slug=competitions_slug))
 
 

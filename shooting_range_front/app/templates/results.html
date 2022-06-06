@@ -26,7 +26,7 @@
 			<td class="m"><b>Kara</b></td>
 			<td class="m"><b>Suma</b></td>
 			<td class="m"><b>Dyskwalifikacja</b></td>
-			{% if current_user.is_refree %}
+			{% if 'referee' in user_context %}
 			<td class="m"><b>Edycja</b></td>
 			{% endif %}
 
@@ -54,7 +54,7 @@
 					<input type="checkbox" {% if challange_result.disqualification == 1 %} checked="checked" {% endif %} onclick="return false">
 				</label>
 			</td>
-			{% if current_user.is_refree %}
+			{% if 'referee' in user_context %}
 			<td>
 				<a href="/edit_result/{{competition.slug}}/{{challange_result._id}}" onclick="toggleMenu();">Edytuj wynik</a>
 			</td>

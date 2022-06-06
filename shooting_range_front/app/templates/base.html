@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html>
 
-
 	<head>
 		<title>Zawody strzeleckie</title>
 	    <meta charset="utf-8">
@@ -29,24 +28,24 @@
 		<div class="MenuToggle" onclick="toggleMenu();"></div>
 		<ul class="navigation">
             <li><a href="/" onclick="toggleMenu();">Strona główna</a></li>
-			<li><a href="/{{competition.slug}}/login" onclick="toggleMenu();">Logowanie</a></li>
-			<li><a href="/{{competition.slug}}/register" onclick="toggleMenu();">Rejestracja</a></li>
+
 			{% if current_user.is_authenticated %}
 				<li><a href="/{{competition.slug}}/add_result" onclick="toggleMenu();">Zapisy do konkurencji</a></li>
-				{% if current_user.is_admin %}
+				{% if 'admin' in user_context %}
 					<li><a href="/{{competition.slug}}/add_competition" onclick="toggleMenu();">Dodaj zawody</a></li>
 					<li><a href="/{{competition.slug}}/add_challange" onclick="toggleMenu();">Dodaj konkurencję</a></li>
-					<li><a href="/{{competition.slug}}/get_users" onclick="toggleMenu();">Edytuj uprawnienia</a></li>
 				{% endif %}
 				<li><a href="/{{competition.slug}}/logout" onclick="toggleMenu();">Wylogowanie</a></li>
 
 				<li><a href="/{{competition.slug}}/get_results" onclick="toggleMenu();">Wyniki</a></li>
+			{% else %}
+				<li><a href="/{{competition.slug}}/login" onclick="toggleMenu();">Logowanie</a></li>
+				<li><a href="/{{competition.slug}}/register" onclick="toggleMenu();">Rejestracja</a></li>
 			{% endif %}
 		</ul>
 	</header>
 
 	<div class="container p-0 pt-5 mt-5">
-
 		{% block content %}
 
 		{% endblock content %}

@@ -28,6 +28,7 @@ def add_user_to_keycloak(username_, firstname_, lastname_, email_, password_):
         + "&password="
         + password
         + "&grant_type=password"
+        + "&client_secret=hm3W9Nr2L4BPhtGmjItHWDaLteTVi8sF"
     )
 
     headers = {"Content-Type": "application/x-www-form-urlencoded"}
@@ -153,7 +154,7 @@ def check_role(username_):
 
 if __name__ == "__main__":
     print_hi("PyCharm")
-    # add_user_to_keycloak(username_='pppa@aa.pl', firstname_='ppxxaaaa@aa.pl', lastname_='ppaxxaaa@aa.pl',
-    #                      email_='ppxxaaaa@aa.pl', password_='aaxssaa@aa.pl')
+    add_user_to_keycloak(username_='pppa@aa.pl', firstname_='ppxxaaaa@aa.pl', lastname_='ppaxxaaa@aa.pl',
+                         email_='ppxxaaaa@aa.pl', password_='aaxssaa@aa.pl')
     # check_user_id('qapl@op.pl')
-    check_role("qapl@op.pl")
+    # check_role("qapl@op.pl")

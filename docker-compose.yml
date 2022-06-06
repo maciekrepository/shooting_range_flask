@@ -3,6 +3,7 @@ networks:
  api_postgres:
   driver: bridge
 
+
 services:
  web:
   build:
@@ -82,6 +83,26 @@ services:
    - "6379:6379"
 
 
+ postgres:
+  image: postgres:14
+  container_name: postgres
+  environment:
+   - POSTGRES_DB=postgres
+   - POSTGRES_USER=postgres
+   - POSTGRES_PASSWORD=postgres
+  ports:
+   - "5432:5432"
+  volumes:
+   - ./data/db:/var/lib/postgresql/data
+  healthcheck:
+   test: ['CMD-SHELL', 'pg_isready -U postgres']
+   interval: 5s
+   timeout: 30s
+   retries: 6
+  restart: always
+  networks:
+   - api_postgres
+
  auth-service:
   build:
    context: ./keycloak
@@ -93,6 +114,7 @@ services:
   volumes:
    - "./keycloak/config:/keycloak/config"
   environment:
+   - "DB_VENDOR=h2"
    - "KEYCLOAK_USER=admin"
    - "KEYCLOAK_PASSWORD=password"
    - "KEYCLOAK_IMPORT=./keycloak/config/realm-export.json"
