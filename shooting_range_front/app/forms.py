@@ -80,7 +80,7 @@ class AddChallangeForm(FlaskForm):
         render_kw={"placeholder": "Zawody"},
         label="Zawody:0",
     )
-    submit = SubmitField("Dodaj zawody")
+    submit = SubmitField("Dodaj konkurencję")
 
     def set_initial_values(self, *args, **kwargs):
         self.competition.choices = kwargs["choices"]
@@ -94,7 +94,7 @@ class AddResultForm(FlaskForm):
         label="Zawody:0",
     )
 
-    submit = SubmitField("Dodaj zawody")
+    submit = SubmitField("Zapisz do konkurencji")
 
     def set_initial_values(self, *args, **kwargs):
         self.challange.choices = kwargs["challange"]
@@ -148,7 +148,7 @@ class EditResultForm(FlaskForm):
         label="Dyskwalifikacja",
     )
 
-    submit = SubmitField("Dodaj zawody")
+    submit = SubmitField("Zapisz wynik")
 
     def set_initial_values(self, *args, **kwargs):
         self.id.data = kwargs["id"]
