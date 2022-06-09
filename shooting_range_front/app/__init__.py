@@ -48,6 +48,7 @@ def create_app():
         EditResult,
         GetUsers,
         EditUser,
+        create_initial_competition
     )
 
     app.add_url_rule("/", view_func=Start.as_view("Start"))
@@ -81,6 +82,6 @@ def create_app():
     app.add_url_rule(
         "/edit_user/<competitions_slug>/<user_id>",
         view_func=EditUser.as_view("EditUser"),
-    )
 
+    )
     return app

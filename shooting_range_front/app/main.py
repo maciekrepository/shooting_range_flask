@@ -58,8 +58,16 @@ import json
 from sqlalchemy import exc
 
 
+def create_initial_competition():
+    if not get_challanges():
+        add_competition_request('Zawody1', '2022-05-05', 'Otwarta')
+
+
 class Start(MethodView):
+    # create_initial_competition()
+
     def get(self):
+        create_initial_competition()
         competitions = get_competitions()
 
         return render_template("start.html", competitions=competitions)
@@ -106,10 +114,10 @@ class Login(MethodView):
                     }
                 )
 
-                flash(
-                    f" your roles: {check_role(form.mail.data)}",
-                    "warning",
-                )
+                # flash(
+                #     f" your roles: {check_role(form.mail.data)}",
+                #     "warning",
+                # )
                 return redirect(
                     url_for("Home", competitions_slug=self.competition["slug"])
                 )
