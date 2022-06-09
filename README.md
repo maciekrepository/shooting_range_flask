@@ -104,6 +104,7 @@ Add user with credentials admin/password:
 <img src="https://user-images.githubusercontent.com/106651068/172535039-329b64fa-99de-43cc-82dd-75460fce9d62.png" width="80%" height="80%"></img>
 <br>
 Assign manage-user role:
+<br>
 <img src="https://user-images.githubusercontent.com/106651068/172911147-5eb0da64-56bf-44ac-94f2-ce7008a054c5.png" width="80%" height="80%"></img>
 <br>
 Make sure that your configuration looks as following:
