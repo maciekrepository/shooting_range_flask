@@ -128,7 +128,7 @@ Take role admin to assigned roles:
 <br>
 <img src="https://user-images.githubusercontent.com/106651068/172536964-6956e0f4-5746-41f9-9369-1bca5b06617b.png" width="80%" height="80%"></img>
 <br>
-Log out and create referee user:
+Create referee user:
 <br>
 <img src="https://user-images.githubusercontent.com/106651068/172836435-1588f0db-724c-4e23-89f3-72fc6ab57928.png" width="80%" height="80%"></img>
 <br>
@@ -140,7 +140,7 @@ Take role referee to assigned roles:
 <br>
 <img src="https://user-images.githubusercontent.com/106651068/172836793-4a4395ad-38db-4b43-80ba-82cb39bf0fd2.png" width="80%" height="80%"></img>
 <br>
-Log out, go to register section and register new basic user:
+Go to register section once again and register new basic user:
 <br>
 <img src="https://user-images.githubusercontent.com/106651068/172541485-484ecd1c-670a-45ef-a3a9-96a3b1175cd1.png" width="80%" height="80%"></img>
 <br>
