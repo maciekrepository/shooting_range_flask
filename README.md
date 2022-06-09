@@ -91,7 +91,7 @@ In credentials section click Regenerate Secret and copy the code:
 <br>
 <img src="https://user-images.githubusercontent.com/106651068/172848647-2ad3ecdb-ae62-4b75-93cb-10bf505c478a.png" width="80%" height="80%"></img>
 <br>
-Paste it into proper place in .env file:
+Paste it into proper place in .env file and restart containers:
 <br>
 <img src="https://user-images.githubusercontent.com/106651068/172848892-bc374d9a-a537-4e07-ac54-f4c55d669a4a.png" width="80%" height="80%"></img>
 <br>
