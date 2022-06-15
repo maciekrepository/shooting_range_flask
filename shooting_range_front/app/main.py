@@ -64,8 +64,6 @@ def create_initial_competition():
 
 
 class Start(MethodView):
-    # create_initial_competition()
-
     def get(self):
         create_initial_competition()
         competitions = get_competitions()
@@ -104,8 +102,6 @@ class Login(MethodView):
             user = User.query.filter_by(mail=form.mail.data).first()
             if user and password_checker(user.password, form.password.data):
                 login_user(user)
-                # task = send_mail.delay()
-
                 session.update(
                     {
                         "roles": check_role(
@@ -114,15 +110,11 @@ class Login(MethodView):
                     }
                 )
 
-                # flash(
-                #     f" your roles: {check_role(form.mail.data)}",
-                #     "warning",
-                # )
                 return redirect(
                     url_for("Home", competitions_slug=self.competition["slug"])
                 )
             else:
-                flash("User does not exist or wrong password", "warning")
+                flash_message("Użykownik nie istnieje lub hasło jest błędne")
                 return render_template(
                     "login.html", form=form, competition=self.competition
                 )
@@ -169,13 +161,13 @@ class Register(MethodView):
                 return redirect(url_for("Home", competitions_slug=self.competition["slug"]))
 
             except exc.IntegrityError:
-                flash("Please provide different username", "warning")
+                flash_message("Podaj inny username")
                 return render_template(
                     "register.html", form=form, competition=self.competition
                 )
 
         else:
-            flash("Please correct data in the form", "warning")
+            flash_message("Popraw wartości w formularzu")
             return render_template(
                 "register.html", form=form, competition=self.competition
             )
@@ -211,14 +203,14 @@ class AddCompetition(MethodView):
                 url_for("add_competition", competitions_slug=competitions_slug)
             )
         else:
-            flash("Wrong values", "warning")
+            flash_message("Niepoprawna wartość")
             return render_template(
                 "add_competition.html", form=form, competition=self.competition
             )
 
 
 class AddChallange(MethodView):
-    decorators = [login_required, scope_required('default-roles-shooting-app')]
+    decorators = [login_required, scope_required('admin')]
 
 
     def form(self):
@@ -227,6 +219,13 @@ class AddChallange(MethodView):
             (competition["_id"], competition["name"])
             for competition in get_competitions()
         ]
+        # competitions = get_competitions()
+        #
+        # def getting(val):
+        #     return list(val["_id"], val["name"])
+        #
+        # choices = map(getting, competitions)
+
         self.form.set_initial_values(choices=choices)
         return self.form
 
@@ -251,7 +250,7 @@ class AddChallange(MethodView):
                 url_for("add_challange", competitions_slug=competitions_slug)
             )
         else:
-            flash("Wrong values", "warning")
+            flash_message("Niepoprawna wartość")
             return render_template(
                 "add_challange.html", form=form, competition=self.competition
             )
@@ -302,7 +301,7 @@ class AddResult(MethodView):
             add_result_request(form.challange.data, current_user.id)
             return redirect(url_for("add_result", competitions_slug=competitions_slug))
         else:
-            flash("Jesteś już zapisany do tej konkurencji", "warning")
+            flash_message("Jesteś już zapisany do tej konkurencji")
             return render_template(
                 "add_result.html",
                 form=form,
@@ -425,24 +424,24 @@ class EditResult(MethodView):
         self.competition = get_competition(competitions_slug)
         if form.validate():
             put_result_request(
-                self.form.id.data,
-                self.form.X.data,
-                self.form.ten.data,
-                self.form.nine.data,
-                self.form.eight.data,
-                self.form.seven.data,
-                self.form.six.data,
-                self.form.five.data,
-                self.form.four.data,
-                self.form.three.data,
-                self.form.two.data,
-                self.form.one.data,
-                self.form.penalty.data,
-                self.form.disqualification.data,
+                _id = self.form.id.data,
+                X = self.form.X.data,
+                ten = self.form.ten.data,
+                nine = self.form.nine.data,
+                eight = self.form.eight.data,
+                seven = self.form.seven.data,
+                six = self.form.six.data,
+                five = self.form.five.data,
+                four = self.form.four.data,
+                three = self.form.three.data,
+                two = self.form.two.data,
+                one = self.form.one.data,
+                penalty = self.form.penalty.data,
+                disqualification= self.form.disqualification.data,
             )
             return redirect(url_for("get_results", competitions_slug=competitions_slug))
         else:
-            flash("Wrong values", "warning")
+            flash_message("Niepoprawna wartość")
             return render_template(
                 "edit_result.html", form=form, competition=self.competition
             )
@@ -514,7 +513,7 @@ class EditUser(MethodView):
 
             return redirect(url_for("GetUsers", competitions_slug=competitions_slug))
         else:
-            flash("Wrong values", "warning")
+            flash("Niepoprawna wartość")
             return render_template(
                 "edit_user.html",
                 form=form,
@@ -532,6 +531,10 @@ class Logout(MethodView):
 
 def password_checker(user_password, form_password):
     return bcrypt.check_password_hash(user_password, form_password)
+
+def flash_message(message):
+    flash(message, "warning")
+
 
 
 @login_manager.user_loader

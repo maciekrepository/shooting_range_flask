@@ -1,7 +1,6 @@
 version: '3.9'
 networks:
  api_postgres:
-  driver: bridge
 
 
 services:
@@ -64,7 +63,7 @@ services:
 
  celery-worker:
   build: ./celery_app
-  command: python3 -m celery -A app.task.celery_app worker --loglevel=DEBUG
+  command: python3 -m celery -A app.task.celery_app worker
   networks:
    - api_postgres
   environment:
@@ -88,9 +87,9 @@ services:
   image: postgres:14
   container_name: postgres
   environment:
-   - POSTGRES_DB=postgres
-   - POSTGRES_USER=postgres
-   - POSTGRES_PASSWORD=postgres
+   - POSTGRES_DB=${POSTGRES_DB}
+   - POSTGRES_USER=${POSTGRES_DB}
+   - POSTGRES_PASSWORD=${POSTGRES_DB}
   ports:
    - "5432:5432"
   volumes:
@@ -115,10 +114,10 @@ services:
   volumes:
    - "./keycloak/config:/keycloak/config"
   environment:
-   - "DB_VENDOR=h2"
-   - "KEYCLOAK_USER=admin"
-   - "KEYCLOAK_PASSWORD=password"
-   - "KEYCLOAK_IMPORT=./keycloak/config/realm-export.json"
+   - DB_VENDOR=${DB_VENDOR}
+   - KEYCLOAK_USER=${KEYCLOAK_USER}
+   - KEYCLOAK_PASSWORD=${KEYCLOAK_PASSWORD}
+   - KEYCLOAK_IMPORT=${KEYCLOAK_IMPORT}
   restart: unless-stopped
   networks:
    - api_postgres
