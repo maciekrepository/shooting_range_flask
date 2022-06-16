@@ -96,7 +96,7 @@ class AddResult(MethodView):
         new_result = Result.create_from_json(json_body=body)
         instance_db_request = DbRequest()
         instance_db_request.add_result_to_db(new_result)
-        # return result_schema.jsonify(new_result)
+
 
 
 class EditResult(MethodView):

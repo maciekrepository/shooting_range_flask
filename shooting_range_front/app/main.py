@@ -137,16 +137,16 @@ class Register(MethodView):
         form = self.form()
         self.competition = get_competition(competitions_slug)
         if form.validate():
+            hashed_password = bcrypt.generate_password_hash(form.password.data)
+            new_user = User(
+                mail=form.mail.data,
+                name=form.name.data,
+                surname=form.surname.data,
+                license=form.license.data,
+                club=form.club.data,
+                password=hashed_password,
+            )
             try:
-                hashed_password = bcrypt.generate_password_hash(form.password.data)
-                new_user = User(
-                    mail=form.mail.data,
-                    name=form.name.data,
-                    surname=form.surname.data,
-                    license=form.license.data,
-                    club=form.club.data,
-                    password=hashed_password,
-                )
                 db.session.add(new_user)
                 db.session.commit()
                 add_user_to_keycloak(
@@ -215,16 +215,11 @@ class AddChallange(MethodView):
 
     def form(self):
         self.form = AddChallangeForm()
-        choices = [
-            (competition["_id"], competition["name"])
-            for competition in get_competitions()
-        ]
-        # competitions = get_competitions()
-        #
-        # def getting(val):
-        #     return list(val["_id"], val["name"])
-        #
-        # choices = map(getting, competitions)
+
+        choices = []
+        x = lambda a: (a["_id"], a["name"])
+        for y in get_competitions():
+            choices.append(x(y))
 
         self.form.set_initial_values(choices=choices)
         return self.form
@@ -261,10 +256,17 @@ class AddResult(MethodView):
 
     def form(self, competition):
         self.form = AddResultForm()
-        challange = [
-            (challange["_id"], challange["name"])
-            for challange in get_competition_challanges(competition["_id"])
-        ]
+        # challange = [
+        #     (challange["_id"], challange["name"])
+        #     for challange in get_competition_challanges(competition["_id"])
+        # ]
+
+        challange = []
+        x = lambda a: (a["_id"], a["name"])
+        for y in get_competition_challanges(competition["_id"]):
+            challange.append(x(y))
+
+
         self.form.set_initial_values(challange=challange)
         return self.form
 
@@ -397,24 +399,26 @@ class EditResult(MethodView):
         one = edited_result["one"]
         penalty = edited_result["penalty"]
         disqualification = edited_result["disqualification"]
-        self.form.set_initial_values(
-            id=id,
-            competitor=competitor,
-            challange=challange,
-            X=X,
-            ten=ten,
-            nine=nine,
-            eight=eight,
-            seven=seven,
-            six=six,
-            five=five,
-            four=four,
-            three=three,
-            two=two,
-            one=one,
-            penalty=penalty,
-            disqualification=disqualification,
-        )
+        initial_values = {
+            'id':id,
+            'competitor':competitor,
+            'challange':challange,
+            'X':X,
+            'ten':ten,
+            'nine':nine,
+            'eight':eight,
+            'seven':seven,
+            'six':six,
+            'five':five,
+            'four':four,
+            'three':three,
+            'two':two,
+            'one':one,
+            'penalty':penalty,
+            'disqualification':disqualification
+        }
+        self.form.set_initial_values(**initial_values)
+
         return render_template(
             "edit_result.html", form=self.form, competition=self.competition, user_context=user_context
         )
@@ -457,69 +461,7 @@ class GetUsers(MethodView):
         return render_template("get_users.html", users=users, competition=competition, user_context=user_context)
 
 
-class EditUser(MethodView):
-    decorators = [login_required, scope_required('admin')]
 
-    def __init__(self):
-        self.form = EditUserForm()
-        self.competition = None
-        self.edited_user = None
-
-    def get(self, competitions_slug, user_id):
-        user_context = session['roles']
-        self.competition = get_competition(competitions_slug)
-        self.edited_user = User.query.filter_by(id=user_id).first()
-        id = self.edited_user.id
-        mail = self.edited_user.mail
-        password = self.edited_user.password
-        name = self.edited_user.name
-        surname = self.edited_user.surname
-        club = self.edited_user.club
-        license = self.edited_user.license
-        is_admin = str(self.edited_user.is_admin)
-        is_refree = str(self.edited_user.is_refree)
-        self.form.set_initial_values(
-            id=id,
-            mail=mail,
-            password=password,
-            name=name,
-            surname=surname,
-            club=club,
-            license=license,
-            is_admin=is_admin,
-            is_refree=is_refree,
-        )
-
-        return render_template(
-            "edit_user.html",
-            form=self.form,
-            competition=self.competition,
-            user=self.edited_user, user_context=user_context
-        )
-
-    def post(self, competitions_slug, user_id):
-        print("post")
-        form = self.form
-        self.edited_user = User.query.filter_by(id=user_id).first()
-        self.competition = get_competition(competitions_slug)
-
-        admin_selection = {"False": 0, "True": 1}
-
-        if form.validate():
-
-            self.edited_user.is_admin = admin_selection[self.form.is_admin.data]
-            self.edited_user.is_refree = admin_selection[self.form.is_refree.data]
-            db.session.commit()
-
-            return redirect(url_for("GetUsers", competitions_slug=competitions_slug))
-        else:
-            flash("Niepoprawna wartość")
-            return render_template(
-                "edit_user.html",
-                form=form,
-                competition=self.competition,
-                user=self.edited_user,
-            )
 
 
 class Logout(MethodView):

@@ -150,23 +150,40 @@ class EditResultForm(FlaskForm):
 
     submit = SubmitField("Zapisz wynik")
 
-    def set_initial_values(self, *args, **kwargs):
-        self.id.data = kwargs["id"]
-        self.challange.data = kwargs["challange"]
-        self.competitor.data = kwargs["competitor"]
-        self.X.data = kwargs["X"]
-        self.ten.data = kwargs["ten"]
-        self.nine.data = kwargs["nine"]
-        self.eight.data = kwargs["eight"]
-        self.seven.data = kwargs["seven"]
-        self.six.data = kwargs["six"]
-        self.five.data = kwargs["five"]
-        self.four.data = kwargs["four"]
-        self.three.data = kwargs["three"]
-        self.two.data = kwargs["two"]
-        self.one.data = kwargs["one"]
-        self.penalty.data = kwargs["penalty"]
-        self.disqualification.data = kwargs["disqualification"]
+    def set_initial_values(self, id, challange, competitor, X, ten, nine, eight, seven, six, five, four, three, two, one, penalty, disqualification):
+        self.id.data = id
+        self.challange.data = challange
+        self.competitor.data = competitor
+        self.X.data = X
+        self.ten.data = ten
+        self.nine.data = nine
+        self.eight.data = eight
+        self.seven.data = seven
+        self.six.data = six
+        self.five.data = five
+        self.four.data = four
+        self.three.data = three
+        self.two.data = two
+        self.one.data = one
+        self.penalty.data = penalty
+        self.disqualification.data = disqualification
+
+        # self.id.data = kwargs["id"]
+        # self.challange.data = kwargs["challange"]
+        # self.competitor.data = kwargs["competitor"]
+        # self.X.data = kwargs["X"]
+        # self.ten.data = kwargs["ten"]
+        # self.nine.data = kwargs["nine"]
+        # self.eight.data = kwargs["eight"]
+        # self.seven.data = kwargs["seven"]
+        # self.six.data = kwargs["six"]
+        # self.five.data = kwargs["five"]
+        # self.four.data = kwargs["four"]
+        # self.three.data = kwargs["three"]
+        # self.two.data = kwargs["two"]
+        # self.one.data = kwargs["one"]
+        # self.penalty.data = kwargs["penalty"]
+        # self.disqualification.data = kwargs["disqualification"]
 
 
 class EditUserForm(FlaskForm):

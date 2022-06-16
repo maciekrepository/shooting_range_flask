@@ -26,8 +26,6 @@ def create_app():
     db.init_app(app)
     app.config.from_object(Config)
 
-    # login_manager.init_app(app)
-    # login_manager.login_view = "login.login"
 
     from .main import (
         GetCompetitions,
