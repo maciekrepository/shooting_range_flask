@@ -28,7 +28,7 @@ from flask_login import (
     current_user,
 )
 from .models import User, UserDeserializerSchema
-from .requests import (
+from shooting_range_flask.shooting_range_front.app.requests import (
     get_competitions,
     get_competition,
     get_challanges,
@@ -98,10 +98,14 @@ class Login(MethodView):
     def post(self, competitions_slug):
         form = self.form()
         self.competition = get_competition(competitions_slug)
+        print('101')
         if form.validate():
             user = User.query.filter_by(mail=form.mail.data).first()
+            print('103', flush=True)
             if user and password_checker(user.password, form.password.data):
+                print('104', flush=True)
                 login_user(user)
+                print('before session update', flush=True)
                 session.update(
                     {
                         "roles": check_role(
@@ -109,6 +113,7 @@ class Login(MethodView):
                         )
                     }
                 )
+                print('after session update', flush=True)
 
                 return redirect(
                     url_for("Home", competitions_slug=self.competition["slug"])

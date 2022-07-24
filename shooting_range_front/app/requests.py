@@ -9,9 +9,11 @@ def get_competitions():
 
     except requests.exceptions.ConnectionError:
         print("Problem z połączeniem z bazą danych")
+        return json.dumps({})
 
     except requests.exceptions.Timeout:
         print("Zbyt długi czas oczekiwania")
+        return json.dumps({})
 
 
 def get_challanges():
