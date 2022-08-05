@@ -1,3 +1,5 @@
+import logging
+
 from flask import (
     render_template,
     redirect,
@@ -9,8 +11,8 @@ from flask import (
     jsonify,
     session,
 )
-from .forms import (
-    LoginForm,
+import shooting_range_flask.shooting_range_front.app.forms
+from shooting_range_flask.shooting_range_front.app.forms import (
     RegisterForm,
     AddCompetitionForm,
     AddChallangeForm,
@@ -27,7 +29,8 @@ from flask_login import (
     logout_user,
     current_user,
 )
-from .models import User, UserDeserializerSchema
+import shooting_range_flask.shooting_range_front.app.models
+from .models import UserDeserializerSchema
 from shooting_range_flask.shooting_range_front.app.requests import (
     get_competitions,
     get_competition,
@@ -43,10 +46,11 @@ from shooting_range_flask.shooting_range_front.app.requests import (
     send_mail_request
 
 )
+import shooting_range_flask.shooting_range_front.app.keycloak_requests
+
 from .keycloak_requests import (
     add_user_to_keycloak,
     get_access_token,
-    check_role
 )
 
 from flask.views import View, MethodView
@@ -84,7 +88,7 @@ class Home(MethodView):
 
 class Login(MethodView):
     def form(self):
-        return LoginForm()
+        return shooting_range_flask.shooting_range_front.app.forms.LoginForm()
 
     def __init__(self):
         self.competition = None
@@ -98,22 +102,17 @@ class Login(MethodView):
     def post(self, competitions_slug):
         form = self.form()
         self.competition = get_competition(competitions_slug)
-        print('101')
         if form.validate():
-            user = User.query.filter_by(mail=form.mail.data).first()
-            print('103', flush=True)
+            user = shooting_range_flask.shooting_range_front.app.models.User.query.filter_by(mail=form.mail.data).first()
             if user and password_checker(user.password, form.password.data):
-                print('104', flush=True)
                 login_user(user)
-                print('before session update', flush=True)
                 session.update(
                     {
-                        "roles": check_role(
+                        "roles": shooting_range_flask.shooting_range_front.app.keycloak_requests.check_role(
                             username_=form.mail.data
                         )
                     }
                 )
-                print('after session update', flush=True)
 
                 return redirect(
                     url_for("Home", competitions_slug=self.competition["slug"])
